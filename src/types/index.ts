@@ -5,6 +5,7 @@ export interface AppState {
   url: string;
   error?: string | null;
   search: string;
+  loading: boolean;
 }
 
 export type AppProps = Record<string, never>;

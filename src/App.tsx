@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import CardList from './components/CardList';
 import Search from './components/Search';
+import Loader from './components/Loader';
 import type {
   PokemonDetail,
   PokemonApiResponse,
@@ -19,6 +20,7 @@ class App extends Component<AppProps, AppState> {
       url: this.defaultUrl,
       error: null,
       search: '',
+      loading: false,
     };
   }
 
@@ -45,6 +47,7 @@ class App extends Component<AppProps, AppState> {
   }
 
   fetchData = async (): Promise<void> => {
+    this.setState({ loading: true, error: null });
     try {
       const res = await fetch(this.state.url);
       const data: PokemonApiResponse = await res.json();
@@ -83,10 +86,12 @@ class App extends Component<AppProps, AppState> {
       this.setState({
         result: detailed,
         error: null,
+        loading: false,
       });
     } catch (err: unknown) {
       console.error(err);
       this.setState({ error: 'Something went wrong' });
+      this.setState({ loading: false });
     }
   };
 
@@ -121,7 +126,7 @@ class App extends Component<AppProps, AppState> {
   };
 
   render() {
-    const { result } = this.state;
+    const { result, loading } = this.state;
 
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
@@ -131,7 +136,7 @@ class App extends Component<AppProps, AppState> {
             onChange={this.handleSearchChange}
             onSearch={this.handleSearch}
           />
-          <CardList result={result} />
+          {loading ? <Loader /> : <CardList result={result} />}
         </div>
       </div>
     );
