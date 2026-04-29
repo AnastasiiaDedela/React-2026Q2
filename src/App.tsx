@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import CardList from './components/CardList';
+import Search from './components/Search';
 import type {
   PokemonDetail,
   PokemonApiResponse,
@@ -9,18 +10,32 @@ import type {
 import type { AppState, AppProps } from './types';
 
 class App extends Component<AppProps, AppState> {
+  defaultUrl = 'https://pokeapi.co/api/v2/pokemon?offset=0&limit=20';
   constructor(props: AppProps) {
     super(props);
 
     this.state = {
       result: [],
-      url: 'https://pokeapi.co/api/v2/pokemon?offset=0&limit=20',
+      url: this.defaultUrl,
       error: null,
+      search: '',
     };
   }
 
   componentDidMount() {
-    this.fetchData();
+    const savedSearch = localStorage.getItem('pokemonSearch');
+
+    if (savedSearch) {
+      this.setState(
+        {
+          search: savedSearch,
+          url: `https://pokeapi.co/api/v2/pokemon/${savedSearch.toLowerCase()}`,
+        },
+        () => this.fetchData()
+      );
+    } else {
+      this.fetchData();
+    }
   }
 
   componentDidUpdate(_: AppProps, prevState: AppState) {
@@ -34,7 +49,11 @@ class App extends Component<AppProps, AppState> {
       const res = await fetch(this.state.url);
       const data: PokemonApiResponse = await res.json();
 
-      const list: PokemonListItem[] = data.results;
+      const isList = 'results' in data;
+
+      const list: PokemonListItem[] = isList
+        ? data.results
+        : [{ name: data.name, url: '' }];
 
       const detailed: PokemonDetail[] = await Promise.all(
         list.map(async (item: PokemonListItem) => {
@@ -71,12 +90,47 @@ class App extends Component<AppProps, AppState> {
     }
   };
 
+  handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    this.setState({ search: value });
+
+    if (value.trim() === '') {
+      localStorage.removeItem('pokemonSearch');
+
+      this.setState({
+        url: this.defaultUrl,
+      });
+    }
+  };
+
+  handleSearch = () => {
+    const trimmed = this.state.search.trim().toLowerCase();
+
+    if (!trimmed) return;
+
+    const currentUrl = `https://pokeapi.co/api/v2/pokemon/${trimmed}`;
+
+    if (this.state.url === currentUrl) return;
+
+    localStorage.setItem('pokemonSearch', trimmed);
+
+    this.setState({
+      url: currentUrl,
+      search: trimmed,
+    });
+  };
+
   render() {
     const { result } = this.state;
 
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
         <div className="w-full max-w-5xl bg-white rounded-2xl shadow-lg p-6">
+          <Search
+            value={this.state.search}
+            onChange={this.handleSearchChange}
+            onSearch={this.handleSearch}
+          />
           <CardList result={result} />
         </div>
       </div>

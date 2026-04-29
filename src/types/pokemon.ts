@@ -5,9 +5,13 @@ export interface PokemonListItem {
   url: string;
 }
 
-export interface PokemonApiResponse {
-  results: PokemonListItem[];
-}
+export type PokemonApiResponse =
+  | {
+      results: PokemonListItem[];
+    }
+  | {
+      name: string;
+    };
 
 export interface PokemonDetail {
   name: string;
