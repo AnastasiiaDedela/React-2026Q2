@@ -2,6 +2,7 @@ import { Component } from 'react';
 import CardList from './components/CardList';
 import Search from './components/Search';
 import Loader from './components/Loader';
+import BuggyComponent from './components/BuggyComponent';
 import type {
   PokemonDetail,
   PokemonApiResponse,
@@ -9,6 +10,7 @@ import type {
   FlavorTextEntry,
 } from './types/pokemon';
 import type { AppState, AppProps } from './types';
+import ErrorBoundary from './components/ErrorBoundary';
 
 class App extends Component<AppProps, AppState> {
   defaultUrl = 'https://pokeapi.co/api/v2/pokemon?offset=0&limit=20';
@@ -148,10 +150,7 @@ class App extends Component<AppProps, AppState> {
   };
 
   render() {
-    const { result, loading, error } = this.state;
-    if (this.state.triggerError) {
-      throw new Error('Test error triggered');
-    }
+    const { result, loading, error, triggerError } = this.state;
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
         <div className="w-full max-w-5xl bg-white rounded-2xl shadow-lg p-6">
@@ -166,14 +165,24 @@ class App extends Component<AppProps, AppState> {
             </div>
           )}
 
-          {loading ? <Loader /> : <CardList result={result} />}
+          <ErrorBoundary>
+            {triggerError ? (
+              <BuggyComponent />
+            ) : loading ? (
+              <Loader />
+            ) : (
+              <CardList result={result} />
+            )}
+          </ErrorBoundary>
 
-          <button
-            onClick={this.handleTestError}
-            className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
-          >
-            Trigger Error
-          </button>
+          <div className="flex justify-end">
+            <button
+              onClick={this.handleTestError}
+              className="mt-4 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition-colors"
+            >
+              Trigger Error
+            </button>
+          </div>
         </div>
       </div>
     );
