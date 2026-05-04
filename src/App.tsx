@@ -50,6 +50,15 @@ class App extends Component<AppProps, AppState> {
     this.setState({ loading: true, error: null });
     try {
       const res = await fetch(this.state.url);
+
+      if (!res.ok) {
+        throw new Error(
+          res.status === 404
+            ? 'Pokémon not found. Try another name.'
+            : 'Server error. Please try again later.'
+        );
+      }
+
       const data: PokemonApiResponse = await res.json();
 
       const isList = 'results' in data;
@@ -89,9 +98,17 @@ class App extends Component<AppProps, AppState> {
         loading: false,
       });
     } catch (err: unknown) {
-      console.error(err);
-      this.setState({ error: 'Something went wrong' });
-      this.setState({ loading: false });
+      let message = 'Something went wrong. Please try again.';
+
+      if (err instanceof Error) {
+        message = err.message;
+      }
+
+      this.setState({
+        error: message,
+        loading: false,
+        result: [], // optional: clear previous results
+      });
     }
   };
 
@@ -126,7 +143,7 @@ class App extends Component<AppProps, AppState> {
   };
 
   render() {
-    const { result, loading } = this.state;
+    const { result, loading, error } = this.state;
 
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
@@ -136,6 +153,11 @@ class App extends Component<AppProps, AppState> {
             onChange={this.handleSearchChange}
             onSearch={this.handleSearch}
           />
+          {error && (
+            <div className="text-red-600 bg-red-100 border border-red-300 p-3 rounded mb-4 text-center">
+              {error}
+            </div>
+          )}
           {loading ? <Loader /> : <CardList result={result} />}
         </div>
       </div>
