@@ -21,6 +21,7 @@ class App extends Component<AppProps, AppState> {
       error: null,
       search: '',
       loading: false,
+      triggerError: false,
     };
   }
 
@@ -142,9 +143,15 @@ class App extends Component<AppProps, AppState> {
     });
   };
 
+  handleTestError = () => {
+    this.setState({ triggerError: true });
+  };
+
   render() {
     const { result, loading, error } = this.state;
-
+    if (this.state.triggerError) {
+      throw new Error('Test error triggered');
+    }
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
         <div className="w-full max-w-5xl bg-white rounded-2xl shadow-lg p-6">
@@ -158,7 +165,15 @@ class App extends Component<AppProps, AppState> {
               {error}
             </div>
           )}
+
           {loading ? <Loader /> : <CardList result={result} />}
+
+          <button
+            onClick={this.handleTestError}
+            className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
+          >
+            Trigger Error
+          </button>
         </div>
       </div>
     );

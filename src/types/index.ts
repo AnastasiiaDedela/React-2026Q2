@@ -6,6 +6,7 @@ export interface AppState {
   error?: string | null;
   search: string;
   loading: boolean;
+  triggerError: boolean;
 }
 
 export type AppProps = Record<string, never>;
