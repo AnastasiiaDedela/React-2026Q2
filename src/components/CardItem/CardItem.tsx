@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import type { CardItemProps } from '../types/index';
+import type { CardItemProps } from '../../types/index';
 
 export default class CardItem extends Component<CardItemProps> {
   render() {

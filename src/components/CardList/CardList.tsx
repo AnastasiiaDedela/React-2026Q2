@@ -1,7 +1,7 @@
 import { Component } from 'react';
-import type { PokemonDetail } from '../types/pokemon';
-import type { CardListProps } from '../types/index';
-import CardItem from './CardItem';
+import type { PokemonDetail } from '../../types/pokemon';
+import type { CardListProps } from '../../types/index';
+import CardItem from '../CardItem/CardItem';
 
 class CardList extends Component<CardListProps> {
   render() {

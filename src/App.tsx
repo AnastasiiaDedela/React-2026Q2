@@ -1,8 +1,8 @@
 import { Component } from 'react';
-import CardList from './components/CardList';
-import Search from './components/Search';
-import Loader from './components/Loader';
-import BuggyComponent from './components/BuggyComponent';
+import CardList from './components/CardList/CardList';
+import Search from './components/Search/Search';
+import Loader from './components/Loader/Loader';
+import BuggyComponent from './components/BuggyComponent/BuggyComponent';
 import type {
   PokemonDetail,
   PokemonApiResponse,
@@ -10,7 +10,7 @@ import type {
   FlavorTextEntry,
 } from './types/pokemon';
 import type { AppState, AppProps } from './types';
-import ErrorBoundary from './components/ErrorBoundary';
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 
 class App extends Component<AppProps, AppState> {
   defaultUrl = 'https://pokeapi.co/api/v2/pokemon?offset=0&limit=20';

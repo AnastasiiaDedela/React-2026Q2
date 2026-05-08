@@ -1,5 +1,5 @@
 import React from 'react';
-import type { SearchProps } from '../types/index';
+import type { SearchProps } from '../../types/index';
 
 class Search extends React.Component<SearchProps> {
   render() {
