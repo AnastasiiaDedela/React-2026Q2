@@ -1,4 +1,3 @@
-import { render } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 
-export * from '@testing-library/react';
-export { render };
+export { render, screen, fireEvent, waitFor };
