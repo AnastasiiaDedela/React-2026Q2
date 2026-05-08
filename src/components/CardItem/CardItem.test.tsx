@@ -1,7 +1,7 @@
 import { render, screen } from '../../test-utils/render';
 import CardItem from './CardItem';
 
-test('renders pokemon data', () => {
+it('renders pokemon data', () => {
   render(
     <CardItem
       item={{
