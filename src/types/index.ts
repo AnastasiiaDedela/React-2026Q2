@@ -24,3 +24,11 @@ export type SearchProps = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSearch: () => void;
 };
+
+export type PaginationProps = {
+  nextUrl: string | null;
+  prevUrl: string | null;
+  setUrl: (url: string) => void;
+  pageNumber: number;
+  setPageNumber: (num: number) => void;
+};

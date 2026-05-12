@@ -1,5 +1,3 @@
-// src/types/pokemon.ts
-
 export interface PokemonListItem {
   name: string;
   url: string;

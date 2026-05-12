@@ -10,6 +10,7 @@ import type {
   PokemonListItem,
   FlavorTextEntry,
 } from './types/pokemon';
+import Pagination from './components/Pagination/Pagination';
 
 const defaultUrl = 'https://pokeapi.co/api/v2/pokemon?offset=0&limit=20';
 
@@ -27,6 +28,9 @@ const App = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [triggerError, setTriggerError] = useState(false);
+  const [nextUrl, setNextUrl] = useState<string | null>(null);
+  const [prevUrl, setPrevUrl] = useState<string | null>(null);
+  const [pageNumber, setPageNumber] = useState(1);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,6 +49,15 @@ const App = () => {
 
         const data: PokemonApiResponse = await res.json();
         const isList = 'results' in data;
+
+        if (isList) {
+          setNextUrl(data.next ?? null);
+          setPrevUrl(data.previous ?? null);
+        } else {
+          setNextUrl(null);
+          setPrevUrl(null);
+        }
+
         const list: PokemonListItem[] = isList
           ? data.results
           : [{ name: data.name, url: '' }];
@@ -129,6 +142,17 @@ const App = () => {
             <CardList result={result} />
           )}
         </ErrorBoundary>
+
+        {!search && (
+          <Pagination
+            nextUrl={nextUrl}
+            prevUrl={prevUrl}
+            setUrl={setUrl}
+            pageNumber={pageNumber}
+            setPageNumber={setPageNumber}
+          />
+        )}
+
         <div className="flex justify-end">
           <button
             onClick={handleTestError}
