@@ -2,7 +2,7 @@ import type { SearchProps } from '../../types/index';
 
 function Search({ value, onChange, onSearch }: SearchProps) {
   return (
-    <div className="flex gap-4 mb-6">
+    <div className="flex gap-4">
       <input
         type="text"
         value={value}
