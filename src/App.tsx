@@ -4,6 +4,7 @@ import Layout from './Layout/Layout';
 import HomePage from './pages/HomePage/HomePage';
 import AboutPage from './pages/AboutPage';
 import DetailPage from './pages/DatailPage';
+import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route path="detail/:name" element={<DetailPage />} />
         </Route>
         <Route path="/about" element={<AboutPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
   );
