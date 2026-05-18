@@ -2,9 +2,9 @@ import { Routes, Route } from 'react-router-dom';
 
 import Layout from './Layout/Layout';
 import HomePage from './pages/HomePage/HomePage';
-import AboutPage from './pages/AboutPage';
-import DetailPage from './pages/DatailPage';
-import NotFoundPage from './pages/NotFoundPage';
+import AboutPage from './pages/AboutPage/AboutPage';
+import DetailPage from './pages/DetailPage/DatailPage';
+import NotFoundPage from './pages/NotFound/NotFoundPage';
 
 function App() {
   return (

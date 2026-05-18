@@ -1,74 +1,53 @@
+import { render, screen, within } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import CardList from '../CardList/CardList';
+import CardList from './CardList';
 
 vi.mock('../CardItem/CardItem', () => ({
-  default: ({ name, url }: { name: string; url: string }) => (
-    <div data-testid="card-item">
-      <span>{name}</span>
-      <span>{url}</span>
+  default: ({ name, currentPage }: { name: string; currentPage: number }) => (
+    <div data-testid="mock-card-item">
+      <span>Name: {name}</span>
+      <span>Page: {currentPage}</span>
     </div>
   ),
 }));
 
-describe('CardList', () => {
+describe('CardList Component', () => {
   const mockList = [
-    {
-      name: 'pikachu',
-      url: 'https://pokeapi.co/api/v2/pokemon/pikachu',
-    },
-    {
-      name: 'bulbasaur',
-      url: 'https://pokeapi.co/api/v2/pokemon/bulbasaur',
-    },
-    {
-      name: 'charmander',
-      url: 'https://pokeapi.co/api/v2/pokemon/charmander',
-    },
+    { name: 'bulbasaur', url: 'https://pokeapi.co/api/v2/pokemon/1/' },
+    { name: 'ivysaur', url: 'https://pokeapi.co/api/v2/pokemon/2/' },
+    { name: 'venusaur', url: 'https://pokeapi.co/api/v2/pokemon/3/' },
   ];
 
-  it('renders all CardItem components', () => {
-    render(<CardList list={mockList} currentPage={0} />);
+  it('renders a fallback message when the list prop is empty', () => {
+    render(<CardList list={[]} currentPage={1} />);
 
-    const cards = screen.getAllByTestId('card-item');
+    expect(screen.getByText('No Pokémon found.')).toBeInTheDocument();
 
-    expect(cards).toHaveLength(3);
+    expect(screen.queryByTestId('mock-card-item')).not.toBeInTheDocument();
   });
 
-  it('passes correct props to CardItem', () => {
-    render(<CardList list={mockList} currentPage={0} />);
+  it('renders the correct number of CardItem components when given a list', () => {
+    render(<CardList list={mockList} currentPage={2} />);
 
-    expect(screen.getByText('pikachu')).toBeInTheDocument();
-    expect(
-      screen.getByText('https://pokeapi.co/api/v2/pokemon/pikachu')
-    ).toBeInTheDocument();
+    expect(screen.queryByText('No Pokémon found.')).not.toBeInTheDocument();
 
-    expect(screen.getByText('bulbasaur')).toBeInTheDocument();
-    expect(
-      screen.getByText('https://pokeapi.co/api/v2/pokemon/bulbasaur')
-    ).toBeInTheDocument();
-
-    expect(screen.getByText('charmander')).toBeInTheDocument();
-    expect(
-      screen.getByText('https://pokeapi.co/api/v2/pokemon/charmander')
-    ).toBeInTheDocument();
+    const cardItems = screen.getAllByTestId('mock-card-item');
+    expect(cardItems).toHaveLength(mockList.length);
   });
 
-  it('renders empty list correctly', () => {
-    render(<CardList list={[]} currentPage={0} />);
+  it('passes down the correct props down to each CardItem child', () => {
+    const targetPage = 5;
+    render(<CardList list={mockList} currentPage={targetPage} />);
 
-    const cards = screen.queryAllByTestId('card-item');
+    expect(screen.getByText('Name: bulbasaur')).toBeInTheDocument();
+    expect(screen.getByText('Name: ivysaur')).toBeInTheDocument();
 
-    expect(cards).toHaveLength(0);
-  });
+    const cards = screen.getAllByTestId('mock-card-item');
 
-  it('has correct grid layout classes', () => {
-    const { container } = render(<CardList list={mockList} currentPage={0} />);
+    const firstCard = within(cards[0]);
+    expect(firstCard.getByText(`Page: ${targetPage}`)).toBeInTheDocument();
 
-    const wrapper = container.firstChild;
-
-    expect(wrapper).toHaveClass('grid');
-    expect(wrapper).toHaveClass('grid-cols-3');
-    expect(wrapper).toHaveClass('gap-4');
+    const pageLabels = screen.getAllByText(`Page: ${targetPage}`);
+    expect(pageLabels).toHaveLength(mockList.length);
   });
 });

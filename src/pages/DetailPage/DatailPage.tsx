@@ -1,6 +1,6 @@
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import Loader from '../components/Loader/Loader';
+import Loader from '../../components/Loader/Loader';
 
 type PokemonDetail = {
   name: string;

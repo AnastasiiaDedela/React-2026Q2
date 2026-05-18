@@ -81,8 +81,6 @@ const HomePage = () => {
     });
   };
 
-  //const handleTestError = () => setTriggerError(true);
-
   const { name } = useParams();
 
   return (
