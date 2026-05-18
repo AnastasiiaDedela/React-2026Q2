@@ -18,18 +18,13 @@ const AboutPage = () => {
         </div>
 
         <p className="text-gray-600 leading-relaxed mb-6">
-          Hi! I am a student currently learning React through the{' '}
-          <a
-            href="https://rs.school/courses/reactjs"
-            className="text-blue-600 font-medium hover:underline"
-            target="_blank"
-            rel="noreferrer"
-          >
-            RS School React course
-          </a>{' '}
-          — a free, community-driven program focused on building real-world
-          frontend skills. This Pokédex app is one of my practical projects from
-          the course.
+          Hi, my name is Ana. I'm currently studying at RS School, enrolled in
+          the React course — a free, community-driven program focused on modern
+          frontend development. Through the course I'm building hands-on
+          experience with React, TypeScript, Redux Toolkit, unit testing, and
+          best practices in component architecture. The program is project-based
+          and mentor-supported, which helps me grow not just technically but
+          also in code review culture and team collaboration skills.{' '}
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
