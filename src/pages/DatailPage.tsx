@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Loader from '../components/Loader/Loader';
 
@@ -17,6 +17,9 @@ const DetailPage = () => {
   const [data, setData] = useState<PokemonDetail | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const page = searchParams.get('page') || '1';
 
   useEffect(() => {
     if (!name) return;
@@ -40,7 +43,7 @@ const DetailPage = () => {
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 relative">
       <button
-        onClick={() => navigate('/')}
+        onClick={() => navigate(`/?page=${page}`)}
         className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-xl font-bold"
         aria-label="Close details"
       >

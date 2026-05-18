@@ -28,7 +28,7 @@ describe('CardList', () => {
   ];
 
   it('renders all CardItem components', () => {
-    render(<CardList list={mockList} />);
+    render(<CardList list={mockList} currentPage={0} />);
 
     const cards = screen.getAllByTestId('card-item');
 
@@ -36,7 +36,7 @@ describe('CardList', () => {
   });
 
   it('passes correct props to CardItem', () => {
-    render(<CardList list={mockList} />);
+    render(<CardList list={mockList} currentPage={0} />);
 
     expect(screen.getByText('pikachu')).toBeInTheDocument();
     expect(
@@ -55,7 +55,7 @@ describe('CardList', () => {
   });
 
   it('renders empty list correctly', () => {
-    render(<CardList list={[]} />);
+    render(<CardList list={[]} currentPage={0} />);
 
     const cards = screen.queryAllByTestId('card-item');
 
@@ -63,7 +63,7 @@ describe('CardList', () => {
   });
 
   it('has correct grid layout classes', () => {
-    const { container } = render(<CardList list={mockList} />);
+    const { container } = render(<CardList list={mockList} currentPage={0} />);
 
     const wrapper = container.firstChild;
 

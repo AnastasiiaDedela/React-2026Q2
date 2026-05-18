@@ -9,9 +9,12 @@ import type {
   PokemonListResponse,
 } from '../../types/pokemon';
 import Pagination from '../../components/Pagination/Pagination';
-import { Outlet, useParams } from 'react-router-dom';
+import { Outlet, useParams, useSearchParams } from 'react-router-dom';
 const BASE_URL = 'https://pokeapi.co/api/v2/pokemon';
 const HomePage = () => {
+  const [inputValue, setInputValue] = useState(
+    () => localStorage.getItem('pokemonSearch') ?? ''
+  );
   const [search, setSearch] = useState(
     () => localStorage.getItem('pokemonSearch') ?? ''
   );
@@ -20,8 +23,9 @@ const HomePage = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [triggerError, setTriggerError] = useState(false);
-  const [pageNumber, setPageNumber] = useState(1);
-
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pageNumber = Number(searchParams.get('page')) || 1;
+  console.log(searchParams.get('page'));
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -38,7 +42,14 @@ const HomePage = () => {
         }
 
         const data: PokemonApiResponse = await res.json();
-        setData(data);
+        if ('weight' in data) {
+          console.log('Single Pokémon data:', data);
+          setData({
+            results: [{ name: data.name, url: `${BASE_URL}/${data.name}` }],
+          } as PokemonListResponse);
+        } else {
+          setData(data);
+        }
         setError(null);
         setLoading(false);
       } catch (err) {
@@ -47,26 +58,27 @@ const HomePage = () => {
       }
     };
     fetchData();
-  }, [url]);
+  }, [url, search]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    console.log(value);
-    setSearch(value);
+    setInputValue(value);
     if (value.trim() === '') {
       localStorage.removeItem('pokemonSearch');
+      setSearch('');
     }
   };
 
   const handleSearch = () => {
-    const trimmed = search.trim().toLowerCase();
+    const trimmed = inputValue.trim().toLowerCase();
     if (!trimmed) return;
-    const currentUrl = `https://pokeapi.co/api/v2/pokemon/${trimmed}`;
-    if (url === currentUrl) return;
     localStorage.setItem('pokemonSearch', trimmed);
-    console.log(localStorage.getItem('pokemonSearch'));
-    setUrl(currentUrl);
     setSearch(trimmed);
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.set('page', '1');
+      return next;
+    });
   };
 
   //const handleTestError = () => setTriggerError(true);
@@ -79,7 +91,7 @@ const HomePage = () => {
         <div className="min-h-screen flex items-center justify-center ">
           <div className="w-full bg-white rounded-2xl shadow-lg p-6 flex flex-col gap-y-4">
             <Search
-              value={search}
+              value={inputValue}
               onChange={handleSearchChange}
               onSearch={handleSearch}
             />
@@ -94,7 +106,7 @@ const HomePage = () => {
               ) : loading ? (
                 <Loader />
               ) : (
-                <CardList list={data?.results || []} />
+                <CardList list={data?.results || []} currentPage={pageNumber} />
               )}
             </ErrorBoundary>
             {!search && (
@@ -103,13 +115,21 @@ const HomePage = () => {
                 onClickPrev={() => {
                   if (data?.previous) {
                     setUrl(data.previous);
-                    setPageNumber(pageNumber - 1);
+                    setSearchParams((prev) => {
+                      const next = new URLSearchParams(prev);
+                      next.set('page', String(pageNumber - 1));
+                      return next;
+                    });
                   }
                 }}
                 onClickNext={() => {
                   if (data?.next) {
                     setUrl(data.next);
-                    setPageNumber(pageNumber + 1);
+                    setSearchParams((prev) => {
+                      const next = new URLSearchParams(prev);
+                      next.set('page', String(pageNumber + 1));
+                      return next;
+                    });
                   }
                 }}
               />
