@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 function NavBar() {
   return (
     <div className="container">
-      <div className="nav-bar px-4 py-3 flex bg-gray-200 justify-between ">
+      <div className="nav-bar px-10 py-3 flex bg-gray-200 justify-between rounded-t-lg">
         <h1 className="text-blue-700 hover:text-blue-700 py-1 px-3 font-bold">
           Pokemon.org
         </h1>
